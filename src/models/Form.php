@@ -118,6 +118,15 @@ class Form extends Model{
     }
 
     /**
+     * If this form implements its own custom `save()` function. If true, controller will call this `save()` and not do any of the other default actions (save in DB or send email)
+     * @return bool
+     */
+    public function isCustomSave()
+    {
+        return false;
+    }
+
+    /**
      * The handle of the form
      * It is generated based on the directory name
      * @return mixed
@@ -154,4 +163,11 @@ class Form extends Model{
     private function getPluginSettings(){
         return Plugin::getInstance()->getSettings();
     }
+
+    public function save()
+    {
+        return true;
+    }
+
+
 }

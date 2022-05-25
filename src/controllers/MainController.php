@@ -74,6 +74,7 @@ class MainController extends \craft\web\Controller
 
             $view = $form->getView();
             $mail_owner = $form->getMailOwner();
+            $is_custom_save = $form->isCustomSave();
             $mail_customer = $form->getMailCustomer();
 
             $params = is_array($params) ? $params : json_decode($params, true);
@@ -83,7 +84,16 @@ class MainController extends \craft\web\Controller
                 /** Validated succesfull. **/
 
                 // Send mail and return thank you page
-                if(!is_null($mail_owner) || !is_null($mail_customer)) {
+                if ($is_custom_save) {
+                    if ($form->save()) {
+                        // Render thank you part
+                        if(!is_null($form['thanx'])){
+                            return $this->renderAjax($form['thanx'], ['model' => $form, 'params' => $params, 'handle' => $handle]);
+                        }else{
+                            return $this->renderAjax(self::FORM_THANX_VIEW, ['model' => $form, 'params' => $params, 'handle' => $handle] );
+                        }
+                    }
+                } elseif (!is_null($mail_owner) || !is_null($mail_customer)) {
                     $mailer = Yii::$app->mailer;
                     $mailer->htmlLayout = self::FORM_MAIL_LAYOUT;
 
