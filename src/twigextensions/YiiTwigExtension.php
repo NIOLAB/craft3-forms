@@ -49,11 +49,20 @@ $.ajax({
 });
 JS;
 
+
+
         Craft::$app->view->registerJs($script);
         Craft::$app->view->registerAssetBundle(pjaxAsset::class);
         Craft::$app->view->registerAssetBundle(ValidationAsset::class);
         Craft::$app->view->registerAssetBundle(ActiveFormAsset::class);
-        return TemplateHelper::raw('<div id="dolphiqFormPlugin-'.$uniqId.'" data-ajaxfill="'.UrlHelper::actionUrl('dolphiq-craft3-forms/main/index', ['handle' => $handle, 'params' => htmlentities(json_encode($params))]).'" class="form--wrapper"></div>');
+        $actionUrl = UrlHelper::actionUrl(
+            'dolphiq-craft3-forms/main/index',
+            [
+                'handle' => $handle,
+                'language' => Craft::$app->language,
+                'params' => htmlentities(json_encode($params)),
+            ]);
+        return TemplateHelper::raw('<div id="dolphiqFormPlugin-'.$uniqId.'" data-ajaxfill="'.$actionUrl.'" class="form--wrapper"></div>');
     }
 
 

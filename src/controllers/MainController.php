@@ -63,7 +63,7 @@ class MainController extends \craft\web\Controller
         });
     }
 
-    public function actionIndex($handle=null, $params = [])
+    public function actionIndex($handle=null, $params = [], $language = null)
     {
         $this->layout = false;
 
@@ -72,11 +72,18 @@ class MainController extends \craft\web\Controller
 
         if($form && $form->getSettings()->enabled) {
 
+            if ($language !== null) {
+                Craft::$app->language = $language;
+            }
+
             $view = $form->getView();
             $mail_owner = $form->getMailOwner();
             $is_custom_save = $form->isCustomSave();
             $mail_customer = $form->getMailCustomer();
 
+            if (is_string($params)) {
+                $params = html_entity_decode($params);
+            }
             $params = is_array($params) ? $params : json_decode($params, true);
 
             if ($form->load(Craft::$app->request->post()) && $form->validate()) {
